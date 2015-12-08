@@ -13,7 +13,7 @@
     
 // Generated from: CommonMessages.proto
 // Note: requires additional types generated from: CommonModelMessages.proto
-namespace OpenApiLib
+namespace OpenApiLib.Proto
 {
   [global::ProtoBuf.ProtoContract(Name=@"ProtoMessage")]
   public partial class ProtoMessage : global::ProtoBuf.IExtensible

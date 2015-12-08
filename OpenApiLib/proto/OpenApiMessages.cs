@@ -14,7 +14,7 @@
 // Generated from: OpenApiMessages.proto
 // Note: requires additional types generated from: OpenApiModelMessages.proto
 // Note: requires additional types generated from: CommonModelMessages.proto
-namespace OpenApiLib
+namespace OpenApiLib.Proto
 {
   [global::ProtoBuf.ProtoContract(Name=@"ProtoOAAuthReq")]
   public partial class ProtoOAAuthReq : global::ProtoBuf.IExtensible

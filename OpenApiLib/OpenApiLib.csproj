@@ -33,10 +33,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CommonMessages.cs" />
-    <Compile Include="CommonModelMessages.cs" />
-    <Compile Include="OpenApiMessages.cs" />
-    <Compile Include="OpenApiModelMessages.cs" />
+    <Compile Include="Json\enums\TradeSideType.cs" />
+    <Compile Include="Json\CashflowJson.cs" />
+    <Compile Include="Json\CreateDemoTraderAccountReqJson.cs" />
+    <Compile Include="Json\CursorMessageJson.cs" />
+    <Compile Include="Json\DealJson.cs" />
+    <Compile Include="Json\DepositWithdrawReqJson.cs" />
+    <Compile Include="Json\DepositWithdrawResJson.cs" />
+    <Compile Include="Json\ErrorJson.cs" />
+    <Compile Include="Json\MessageJson.cs" />
+    <Compile Include="Json\PendingOrderJson.cs" />
+    <Compile Include="Json\PositionCloseDetailsJson.cs" />
+    <Compile Include="Json\PositionJson.cs" />
+    <Compile Include="Json\ProfileJson.cs" />
+    <Compile Include="Json\SymbolJson.cs" />
+    <Compile Include="Json\TickDataJson.cs" />
+    <Compile Include="Json\TradingAccountJson.cs" />
+    <Compile Include="Json\TrendbarJson.cs" />
+    <Compile Include="Proto\CommonMessages.cs" />
+    <Compile Include="Proto\CommonModelMessages.cs" />
+    <Compile Include="Proto\OpenApiMessages.cs" />
+    <Compile Include="Proto\OpenApiModelMessages.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

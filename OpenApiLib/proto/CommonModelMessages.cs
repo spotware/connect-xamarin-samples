@@ -12,7 +12,7 @@
 // Option: light framework (CF/Silverlight) enabled
     
 // Generated from: CommonModelMessages.proto
-namespace OpenApiLib
+namespace OpenApiLib.Proto
 {
   [global::ProtoBuf.ProtoContract(Name=@"ProtoIntRange")]
   public partial class ProtoIntRange : global::ProtoBuf.IExtensible

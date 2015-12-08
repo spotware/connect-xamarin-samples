@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OpenApiLib;
+using OpenApiLib.Proto;
 using ProtoBuf;
 
 

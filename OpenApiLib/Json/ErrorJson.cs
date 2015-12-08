@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace OpenApiLib.Json
 {
 	public class ErrorJson
@@ -24,9 +26,7 @@ namespace OpenApiLib.Json
 
 		public override string ToString()
 		{
-			return new org.apache.commons.lang3.builder.ToStringBuilder(this, org.apache.commons.lang3.builder.ToStringStyle
-				.SHORT_PREFIX_STYLE).append("errorCode", errorCode).append("description", description
-				).ToString();
+			return JsonConvert.SerializeObject (this);
 		}
 	}
 }

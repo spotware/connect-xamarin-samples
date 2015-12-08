@@ -11,5 +11,10 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)cTraderGame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TradingApiTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Json\AccountsAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Json\AccountsAPIException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Json\" />
   </ItemGroup>
 </Project>

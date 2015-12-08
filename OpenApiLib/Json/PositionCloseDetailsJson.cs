@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace OpenApiLib.Json
 {
 	public class PositionCloseDetailsJson
@@ -185,8 +187,7 @@ namespace OpenApiLib.Json
 
 		public override string ToString()
 		{
-			return org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString(this, 
-				org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE);
+			return JsonConvert.SerializeObject (this);
 		}
 	}
 }

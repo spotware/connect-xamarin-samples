@@ -9,6 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Collections.Concurrent;
 using OpenApiDeveloperLibrary;
+using OpenApiLib.Proto;
 
 namespace cTraderGame
 {
@@ -306,9 +307,9 @@ namespace cTraderGame
 			}
 
 			switch (_msg.payloadType) {
-			case (int)OpenApiLib.ProtoPayloadType.HEARTBEAT_EVENT:
+			case (int)ProtoPayloadType.HEARTBEAT_EVENT:
 				break;
-			case (int)OpenApiLib.ProtoOAPayloadType.OA_EXECUTION_EVENT:
+			case (int)ProtoOAPayloadType.OA_EXECUTION_EVENT:
 				var _payload_msg = msgFactory.GetExecutionEvent (rawData);
 				if (_payload_msg.position != null) {
 					testPositionId = _payload_msg.position.positionId;
@@ -442,7 +443,7 @@ namespace cTraderGame
 
 		static void SendMarketOrderRequest (OpenApiMessagesFactory msgFactory, Queue writeQueue)
 		{
-			var _msg = msgFactory.CreateMarketOrderRequest (testAccountId, testAccessToken, "EURUSD", OpenApiLib.ProtoTradeSide.BUY, testVolume, clientMsgId);
+			var _msg = msgFactory.CreateMarketOrderRequest (testAccountId, testAccessToken, "EURUSD", ProtoTradeSide.BUY, testVolume, clientMsgId);
 			if (isDebugIsOn)
 				Console.WriteLine ("SendMarketOrderRequest() Message to be send:\n{0}", OpenApiMessagesPresentation.ToString (_msg));
 			writeQueue.Enqueue (Utils.Serialize (_msg));
@@ -450,7 +451,7 @@ namespace cTraderGame
 
 		static void SendLimitOrderRequest (OpenApiMessagesFactory msgFactory, Queue writeQueue)
 		{
-			var _msg = msgFactory.CreateLimitOrderRequest (testAccountId, testAccessToken, "EURUSD", OpenApiLib.ProtoTradeSide.BUY, 1000000, 1.8, clientMsgId);
+			var _msg = msgFactory.CreateLimitOrderRequest (testAccountId, testAccessToken, "EURUSD", ProtoTradeSide.BUY, 1000000, 1.8, clientMsgId);
 			if (isDebugIsOn)
 				Console.WriteLine ("SendLimitOrderRequest() Message to be send:\n{0}", OpenApiMessagesPresentation.ToString (_msg));
 			writeQueue.Enqueue (Utils.Serialize (_msg));
@@ -458,7 +459,7 @@ namespace cTraderGame
 
 		static void SendStopOrderRequest (OpenApiMessagesFactory msgFactory, Queue writeQueue)
 		{
-			var _msg = msgFactory.CreateStopOrderRequest (testAccountId, testAccessToken, "EURUSD", OpenApiLib.ProtoTradeSide.BUY, 1000000, 0.2, clientMsgId);
+			var _msg = msgFactory.CreateStopOrderRequest (testAccountId, testAccessToken, "EURUSD", ProtoTradeSide.BUY, 1000000, 0.2, clientMsgId);
 			if (isDebugIsOn)
 				Console.WriteLine ("SendStopOrderRequest() Message to be send:\n{0}", OpenApiMessagesPresentation.ToString (_msg));
 			writeQueue.Enqueue (Utils.Serialize (_msg));

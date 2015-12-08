@@ -5,8 +5,12 @@ namespace OpenApiLib.Json
 	public class MessageJson<T>
 	{
 		private T data;
-
 		private ErrorJson error;
+
+		public static MessageJson<T> newInstance<T>(T data)
+		{
+			return new MessageJson<T>(data);
+		}
 
 		public MessageJson()
 		{
@@ -17,29 +21,22 @@ namespace OpenApiLib.Json
 			this.data = data;
 		}
 
-		public virtual T getData()
-		{
-			return data;
+		public T Data {
+			get {
+				return data;
+			}
+			set {
+				data = value;
+			}
 		}
 
-		public virtual ErrorJson getError()
-		{
-			return error;
-		}
-
-		public virtual void setData(T data)
-		{
-			this.data = data;
-		}
-
-		public virtual void setError(ErrorJson error)
-		{
-			this.error = error;
-		}
-
-		public static MessageJson<T> newInstance<T>(T data)
-		{
-			return new MessageJson<T>(data);
+		public ErrorJson Error {
+			get {
+				return error;
+			}
+			set {
+				error = value;
+			}
 		}
 
 		public override string ToString()

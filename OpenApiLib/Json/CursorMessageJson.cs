@@ -19,7 +19,7 @@ namespace OpenApiLib.Json
 		public static CursorMessageJson<T> newInstance<T>(T data, string nextCursor)
 		{
 			CursorMessageJson<T> connectCursorMessage = new CursorMessageJson<T>();
-			connectCursorMessage.setData(data);
+			connectCursorMessage.Data = data;
 			connectCursorMessage.setNext(nextCursor);
 			return connectCursorMessage;
 		}

@@ -68,18 +68,20 @@ namespace OpenApiDeveloperLibrary.Json
 				}
 				urlBuilder.Append(parametersBuilder);
 			}
-			/*if (pathParams != null)
+			string url = urlBuilder.ToString ();
+			if (pathParams != null)
 			{
-				org.apache.commons.lang3.text.StrSubstitutor sub = new org.apache.commons.lang3.text.StrSubstitutor
-					(pathParams);
-				sub.replaceIn(urlBuilder);
-			}*/
-			return urlBuilder.ToString();
+				foreach (KeyValuePair<string, string> item in pathParams)
+				{
+					url = url.Replace ("${" + item.Key + "}", item.Value);
+				}
+			}
+			return url;
 		}
 
 		private string callURL(string myURL)
 		{
-			System.Console.Out.WriteLine("Requsted URL:" + myURL);
+			Console.WriteLine("Requsted URL:" + myURL);
 			HttpWebRequest http = (HttpWebRequest)WebRequest.Create(myURL);
 			WebResponse response = http.GetResponse();
 
@@ -97,13 +99,13 @@ namespace OpenApiDeveloperLibrary.Json
 			try
 			{
 				MessageJson<TradingAccountJson[]> messageJson = JsonConvert.DeserializeObject<MessageJson<TradingAccountJson[]>>(callURL(service));
-				ErrorJson error = messageJson.getError();
+				ErrorJson error = messageJson.Error;
 				if (error != null)
 				{
 					throw new AccountsAPIException(error.getErrorCode(), error.getDescription
 						());
 				}
-				return messageJson.getData();
+				return messageJson.Data;
 			}
 			catch (System.Exception e)
 			{
@@ -124,12 +126,12 @@ namespace OpenApiDeveloperLibrary.Json
 			try
 			{
 				MessageJson<TrendbarJson[]> messageJson = JsonConvert.DeserializeObject<MessageJson<TrendbarJson[]>>(callURL(service));
-				ErrorJson error = messageJson.getError();
+				ErrorJson error = messageJson.Error;
 				if (error != null)
 				{
 					throw new AccountsAPIException(error.getErrorCode(), error.getDescription ());
 				}
-				return messageJson.getData();
+				return messageJson.Data;
 			}
 			catch (System.Exception e)
 			{

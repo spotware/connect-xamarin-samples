@@ -40,14 +40,10 @@ namespace cTraderGame
 
 		private TrendbarJson[] getMinuteTrendbars ()
 		{
-			try {
-				String accountId = "88979";
-				DateTime to = DateTime.Now;
-				DateTime from = to.AddHours (-5);
-				return accountsAPI.getMinuteTredbars (accountId, symbolName, from, to);
-			} catch (AccountsAPIException e) {
-				throw new Exception (e);
-			}
+			String accountId = "62002";
+			DateTime to = DateTime.Now;
+			DateTime from = to.AddHours (-5);
+			return accountsAPI.getMinuteTredbars (accountId, symbolName, from, to);
 		}
 
 
@@ -117,15 +113,8 @@ namespace cTraderGame
 				Title = symbolName,
 				Color = OxyColors.Black,
 			};
-			var r = new Random (314);
-			var price = 100.0;
 			foreach (TrendbarJson item in data) {
-				/*price = price + r.NextDouble () + 0.1;
-				var high = price + 10 + (r.NextDouble () * 10);
-				var low = price - (10 + (r.NextDouble () * 10));
-				var open = low + (r.NextDouble () * (high - low));
-				var close = low + (r.NextDouble () * (high - low));*/
-				s1.Items.Add (new HighLowItem (item.getTimestamp, item.getHigh, low, open, close));
+				s1.Items.Add (new HighLowItem (item.Timestamp, item.High, item.Low, item.Open, item.Close));
 			}
 
 			model.Series.Add (s1);

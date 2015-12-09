@@ -8,19 +8,24 @@ using OxyPlot.Series;
 using OxyPlot.Axes;
 using OpenApiDeveloperLibrary.Json;
 using OpenApiLib.Json;
+using cTraderGame.Proto;
 
 namespace cTraderGame
 {
 	public class App : Application
 	{
-		private const string API_HOST_URL = "https://sandbox-api.spotware.com";
-		private const string ACCOUNTS_API_TOKEN = "test002_access_token";
-		private AccountsAPI accountsAPI = new AccountsAPI (API_HOST_URL, ACCOUNTS_API_TOKEN);
+		private const string ACCOUNTS_API_HOST_URL = "https://sandbox-api.spotware.com";
+		private const string TRADING_API_HOST = "sandbox-tradeapi.spotware.com";
+		private const int TRADING_API_PORT = 5032;
+		private const string API_TOKEN = "test002_access_token";
 
+		private AccountsAPI accountsAPI = new AccountsAPI (ACCOUNTS_API_HOST_URL, API_TOKEN);
+		private TradingAPI tradingAPI = new TradingAPI (TRADING_API_HOST, TRADING_API_PORT, API_TOKEN);
 		private string symbolName = "EURUSD";
 
 		public App ()
 		{
+			// The root page of your application
 			MainPage = new ContentPage { 
 				Content = new StackLayout {
 					Orientation = StackOrientation.Vertical,
@@ -33,7 +38,7 @@ namespace cTraderGame
 					}
 				},
 			};
-			// The root page of your application
+			tradingAPI.Start ();
 			//MainPage = new cTraderGame.MainPage();
 			//TradingApiTest.Start();
 		}
@@ -42,7 +47,7 @@ namespace cTraderGame
 		{
 			String accountId = "62002";
 			DateTime to = DateTime.Now;
-			DateTime from = to.AddHours (-5);
+			DateTime from = to.AddHours (-1);
 			return accountsAPI.getMinuteTredbars (accountId, symbolName, from, to);
 		}
 

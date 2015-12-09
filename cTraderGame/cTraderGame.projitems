@@ -13,8 +13,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)TradingApiTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Json\AccountsAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Json\AccountsAPIException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Proto\TradingAPI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Json\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Proto\" />
   </ItemGroup>
 </Project>

@@ -84,7 +84,7 @@ namespace cTraderGame
 		{
 			String accountId = "62002";
 			DateTime to = DateTime.Now;
-			DateTime from = to.AddHours (-1);
+			DateTime from = to.AddHours (-3);
 			return accountsAPI.getMinuteTredbars (accountId, symbolName, from, to);
 		}
 
@@ -166,7 +166,6 @@ namespace cTraderGame
 				Text = data[data.Length - 1].Close.ToString()
 			};
 			model.Annotations.Add(arrowAnnotation);
-
 			return model;
 		}
 

@@ -248,6 +248,12 @@ namespace cTraderGame.Proto
 		#endregion Auxilary functions
 
 		#region Incoming data stream processing...
+		public delegate void ExecutionEventHandler(ProtoOAExecutionEvent executionEvent);
+		public delegate void SpotEventHandler(ProtoOASpotEvent executionEvent);
+
+		public event ExecutionEventHandler ExecutionEvent;
+		public event SpotEventHandler SpotEvent;
+
 		private void ProcessIncomingDataStream (byte[] rawData)
 		{
 			var _msg = incomingMsgFactory.GetMessage (rawData);
@@ -259,15 +265,23 @@ namespace cTraderGame.Proto
 			}
 
 			switch (_msg.payloadType) {
-				case (int)ProtoPayloadType.HEARTBEAT_EVENT:
-					break;
-				case (int)ProtoOAPayloadType.OA_EXECUTION_EVENT:
-					var _payload_msg = incomingMsgFactory.GetExecutionEvent (rawData);
-					if (_payload_msg.position != null) {
-						testPositionId = _payload_msg.position.positionId;
-					}
-					break;
-				default:
+			case (int)ProtoPayloadType.HEARTBEAT_EVENT:
+				break;
+			case (int)ProtoOAPayloadType.OA_EXECUTION_EVENT:
+				var _payload_msg = incomingMsgFactory.GetExecutionEvent (rawData);
+				if (ExecutionEvent != null) {
+					ExecutionEvent (_payload_msg);
+				}
+				if (_payload_msg.position != null) {
+					testPositionId = _payload_msg.position.positionId;
+				}
+				break;
+			case (int)ProtoOAPayloadType.OA_SPOT_EVENT:
+				if (SpotEvent != null) {
+					SpotEvent (incomingMsgFactory.GetSpotEvent (rawData));
+				}
+				break;
+			default:
 					break;
 			}
 		}
@@ -349,9 +363,9 @@ namespace cTraderGame.Proto
 				Console.WriteLine ("SetClientMessageId() New message ID:\"{0}\"", (clientMsgId == null ? "null" : clientMsgId));
 		}
 
-		private void SendMarketOrderRequest ()
+		public void SendMarketOrderRequest (string symbol, ProtoTradeSide tradeSide, long volume)
 		{
-			var _msg = outgoingMsgFactory.CreateMarketOrderRequest (testAccountId, authToken, "EURUSD", ProtoTradeSide.BUY, testVolume, clientMsgId);
+			var _msg = outgoingMsgFactory.CreateMarketOrderRequest (testAccountId, authToken, symbol, tradeSide, volume, clientMsgId);
 			if (isDebugIsOn)
 				Console.WriteLine ("SendMarketOrderRequest() Message to be send:\n{0}", OpenApiMessagesPresentation.ToString (_msg));
 			writeQueue.Enqueue (Utils.Serialize (_msg));

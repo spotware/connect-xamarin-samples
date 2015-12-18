@@ -7,7 +7,7 @@ namespace OpenApiLib.Json
 		private T data;
 		private ErrorJson error;
 
-		public static MessageJson<T> newInstance<T>(T data)
+		public static MessageJson<T> newInstance(T data)
 		{
 			return new MessageJson<T>(data);
 		}

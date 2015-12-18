@@ -8,12 +8,12 @@ using OxyPlot.Series;
 using OxyPlot.Axes;
 using OpenApiDeveloperLibrary.Json;
 using OpenApiLib.Json;
-using cTraderGame.Proto;
+using OpenTrader.Proto;
 using OpenApiLib.Proto;
 using System.Text;
 using OxyPlot.Annotations;
 
-namespace cTraderGame
+namespace OpenTrader
 {
 	public class App : Application
 	{

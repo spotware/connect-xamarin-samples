@@ -11,7 +11,7 @@ using System.Collections.Concurrent;
 using OpenApiDeveloperLibrary;
 using OpenApiLib.Proto;
 
-namespace cTraderGame
+namespace OpenTrader
 {
 	class TradingApiTest
 	{

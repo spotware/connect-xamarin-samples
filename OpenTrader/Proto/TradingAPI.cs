@@ -10,7 +10,7 @@ using System.Threading;
 using OpenApiDeveloperLibrary;
 using OpenApiLib.Proto;
 
-namespace cTraderGame.Proto
+namespace OpenTrader.Proto
 {
 	public class TradingAPI
 	{
@@ -42,7 +42,7 @@ namespace cTraderGame.Proto
 		private SslStream apiSocket;
 
 		private volatile static bool isShutdown;
-		private volatile static bool isRestart;
+		//private volatile static bool isRestart;
 
 		private Queue writeQueue = Queue.Synchronized (new Queue ());
 		private Queue readQueue = Queue.Synchronized (new Queue ());
@@ -162,7 +162,7 @@ namespace cTraderGame.Proto
 
 		public void Start ()
 		{
-			isRestart = false;
+			//isRestart = false;
 			#region open ssl connection
 			Console.WriteLine ("Establishing trading SSL connection to {0}:{1}...", host, port);
 			try {

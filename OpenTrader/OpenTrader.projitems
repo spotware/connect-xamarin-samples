@@ -6,14 +6,19 @@
     <SharedGUID>{DF212782-A136-48EC-A03C-77854962B925}</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>cTraderGame</Import_RootNamespace>
+    <Import_RootNamespace>OpenTrader</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)cTraderGame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenTrader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TradingApiTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Json\AccountsAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Json\AccountsAPIException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Proto\TradingAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\BaseContentPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\LoginPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\ProfilePage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuthSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Json\" />

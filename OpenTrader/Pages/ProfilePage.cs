@@ -12,8 +12,8 @@ namespace OAuthTwoDemo.XForms
 			MessagingCenter.Subscribe<App> (this, "Authenticated", (sender) => {
 				Content = new Label () { 
 					Text = "Profile Page",
-					XAlign = TextAlignment.Center,
-					YAlign = TextAlignment.Center
+					HorizontalTextAlignment = TextAlignment.Center,
+					VerticalTextAlignment = TextAlignment.Center
 				};
 			});
 		}

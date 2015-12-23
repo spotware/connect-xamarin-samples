@@ -7,6 +7,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Xamarin.Auth;
 
 namespace OpenTrader.Droid
 {
@@ -19,8 +20,9 @@ namespace OpenTrader.Droid
 
 			global::Xamarin.Forms.Forms.Init (this, bundle);
 			global::OxyPlot.Xamarin.Forms.Platform.Android.PlotViewRenderer.Init ();
-
-			LoadApplication (OAuthTwoDemo.XForms.App.Instance);
+			App app = App.Instance;
+			App.AccountStore = AccountStore.Create (this);
+			LoadApplication (app);
 		}
 	}
 }

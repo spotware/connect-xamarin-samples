@@ -1,6 +1,6 @@
 ﻿using Xamarin.Forms;
 
-namespace OAuthTwoDemo.XForms
+namespace OpenTrader.Pages
 {
 	public class BaseContentPage : ContentPage
 	{

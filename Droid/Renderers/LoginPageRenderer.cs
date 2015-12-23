@@ -1,14 +1,14 @@
 ﻿using System; 
 using Android.App;
-using OAuthTwoDemo.XForms;
+using OpenTrader;
+using OpenTrader.Droid;
+using OpenTrader.Pages;
 using Xamarin.Auth;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
-using OAuthTwoDemo.XForms.Android;
 
 [assembly: ExportRenderer (typeof (LoginPage), typeof (LoginPageRenderer))]
-
-namespace OAuthTwoDemo.XForms.Android
+namespace OpenTrader.Droid
 {
 	public class LoginPageRenderer : PageRenderer
 	{
@@ -29,7 +29,7 @@ namespace OAuthTwoDemo.XForms.Android
                 if (eventArgs.IsAuthenticated) {
                     App.Instance.SuccessfulLoginAction.Invoke();
                     // Use eventArgs.Account to do wonderful things
-                    App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);
+					App.Instance.SaveAccount(eventArgs.Account);
                 } else {
                     // The user cancelled
                 }

@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Linq;
 using Xamarin.Forms;
+using Xamarin.Auth;
+using System.Collections.Generic;
+using OpenTrader.Pages;
 
-namespace OAuthTwoDemo.XForms
+namespace OpenTrader
 {
 	public class App : Application
 	{
+		private const string OAUTH_SERVICE_NAME = "cTrader ID";
 		// just a singleton pattern so I can have the concept of an app instance
 		static volatile App _Instance;
 		static object _SyncRoot = new Object();
 
 		private NavigationPage _NavPage;
 		private string _Token;
+		private static AccountStore accountStore;
 
 		public static App Instance
 		{
@@ -43,25 +49,34 @@ namespace OAuthTwoDemo.XForms
 
 		private App ()
 		{
-			var profilePage = new ProfilePage();
-
-			_NavPage = new NavigationPage(profilePage);
-
+			var mainPage = new MainPage();
+			_NavPage = new NavigationPage(mainPage);
 			MainPage = _NavPage;
 		}
 
 		public bool IsAuthenticated {
-			get { return !string.IsNullOrWhiteSpace(_Token); }
+			get { return !string.IsNullOrWhiteSpace(Token); }
 		}
 
 		public string Token {
-			get { return _Token; }
+			get {
+				if (_Token == null) {
+					IEnumerable<Account> accounts = accountStore.FindAccountsForService (OAUTH_SERVICE_NAME);
+					if (accounts.Count() > 0) {
+						Account account = accounts.Last ();
+						if (account != null) {
+							_Token = account.Properties ["access_token"];
+						}
+					}
+				}
+				return _Token;
+			}
 		}
 
-		public void SaveToken(string token)
+		public void SaveAccount(Account account)
 		{
-			_Token = token;
-
+			accountStore.Save (account, OAUTH_SERVICE_NAME);
+			_Token = account.Properties ["access_token"];
 			// broadcast a message that authentication was successful
 			MessagingCenter.Send<App> (this, "Authenticated");
 		}
@@ -70,6 +85,14 @@ namespace OAuthTwoDemo.XForms
 		{
 			get {
 				return new Action (() => _NavPage.Navigation.PopModalAsync ());
+			}
+		}
+
+		public static AccountStore AccountStore {
+			get {
+				return accountStore;
+			} set {
+				accountStore = value;
 			}
 		}
 

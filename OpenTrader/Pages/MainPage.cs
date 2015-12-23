@@ -1,29 +1,26 @@
-﻿using System;
-
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using System.Collections.Generic;
+using OpenTrader.Proto;
+using OpenApiDeveloperLibrary.Json;
+using OpenApiLib.Json;
+using System;
 using OxyPlot.Xamarin.Forms;
 using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.Axes;
-using OpenApiDeveloperLibrary.Json;
-using OpenApiLib.Json;
-using OpenTrader.Proto;
-using OpenApiLib.Proto;
-using System.Text;
 using OxyPlot.Annotations;
+using OpenApiLib.Proto;
 
-namespace OpenTrader
+namespace OpenTrader.Pages
 {
-	public class App : Application
+	public class MainPage : BaseContentPage
 	{
 		private const string ACCOUNTS_API_HOST_URL = "https://sandbox-api.spotware.com";
 		private const string TRADING_API_HOST = "sandbox-tradeapi.spotware.com";
 		private const int TRADING_API_PORT = 5032;
-		private const string API_TOKEN = "test002_access_token";
 
-		private AccountsAPI accountsAPI = new AccountsAPI (ACCOUNTS_API_HOST_URL, API_TOKEN);
-		private TradingAPI tradingAPI = new TradingAPI (TRADING_API_HOST, TRADING_API_PORT, API_TOKEN);
+		private AccountsAPI accountsAPI;
+		private TradingAPI tradingAPI;
 		private string symbolName = "EURUSD";
 
 		private Dictionary<string, int> nameToVolume = new Dictionary<string, int> {
@@ -35,11 +32,15 @@ namespace OpenTrader
 
 		private TradingButton buyButton = new TradingButton ("Buy");
 		private TradingButton sellButton = new TradingButton("Sell");
-
-		public App ()
+		public MainPage ()
 		{
-			// The root page of your application
-			MainPage = new ContentPage { 
+			// Using messaging center to ensure that content only gets loaded once authentication is successful.
+			// Once Xamarin.Forms adds more support for view life cycle events, this kind of thing won't be as necessary.
+			// The OnAppearing() and OnDisappearing() overrides just don't quite cut the mustard yet, nor do the Appearing and Disappearing delegates.
+			//MessagingCenter.Subscribe<App> (this, "Authenticated", (sender) => {
+				accountsAPI = new AccountsAPI (ACCOUNTS_API_HOST_URL, App.Instance.Token);
+				tradingAPI = new TradingAPI (TRADING_API_HOST, TRADING_API_PORT, App.Instance.Token);
+
 				Content = new StackLayout {
 					Orientation = StackOrientation.Vertical,
 					HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -49,40 +50,36 @@ namespace OpenTrader
 						createChartPanel (getMinuteTrendbars ()),
 						createBottomPanel ()
 					}
-				},
-			};
-			tradingAPI.Start ();
-			tradingAPI.ExecutionEvent += (executionEvent) => {
-				Device.BeginInvokeOnMainThread(() => {
-					String filledTitle = "Order Filled at {0}";
-					String filledMessage = "Your request to {0} {1} of {2} was filled at VWAP {3}";
-					if (executionEvent.executionType == ProtoOAExecutionType.OA_ORDER_FILLED) {
-						ProtoOAOrder order = executionEvent.order;
-						string title = String.Format(filledTitle, order.executionPrice);
-						string message = String.Format(filledMessage, order.tradeSide, order.requestedVolume/100, order.symbolName, order.executionPrice);
-						MainPage.DisplayAlert(title, message, "Close");
-					}
-
-				});
-			};
-			tradingAPI.SpotEvent += (spotEvent) => {
-				Device.BeginInvokeOnMainThread(() => {
-					if (spotEvent.askPriceSpecified) {
-						buyButton.setPrice(spotEvent.askPrice);
-					}
-					if (spotEvent.bidPriceSpecified) {
-						sellButton.setPrice(spotEvent.bidPrice);
-					}
-				});
-			};
-
-			//MainPage = new cTraderGame.MainPage();
-			//TradingApiTest.Start();
+				};
+				tradingAPI.Start ();
+				tradingAPI.ExecutionEvent += (executionEvent) => {
+					Device.BeginInvokeOnMainThread(() => {
+						String filledTitle = "Order Filled at {0}";
+						String filledMessage = "Your request to {0} {1} of {2} was filled at VWAP {3}";
+						if (executionEvent.executionType == ProtoOAExecutionType.OA_ORDER_FILLED) {
+							ProtoOAOrder order = executionEvent.order;
+							string title = String.Format(filledTitle, order.executionPrice);
+							string message = String.Format(filledMessage, order.tradeSide, order.requestedVolume/100, order.symbolName, order.executionPrice);
+							DisplayAlert(title, message, "Close");
+						}
+					});
+				};
+				tradingAPI.SpotEvent += (spotEvent) => {
+					Device.BeginInvokeOnMainThread(() => {
+						if (spotEvent.askPriceSpecified) {
+							buyButton.setPrice(spotEvent.askPrice);
+						}
+						if (spotEvent.bidPriceSpecified) {
+							sellButton.setPrice(spotEvent.bidPrice);
+						}
+					});
+				};
+			//});
 		}
 
 		private TrendbarJson[] getMinuteTrendbars ()
 		{
-			String accountId = "62002";
+			string accountId = "62002";
 			DateTime to = DateTime.Now;
 			DateTime from = to.AddHours (-3);
 			return accountsAPI.getMinuteTredbars (accountId, symbolName, from, to);
@@ -168,40 +165,24 @@ namespace OpenTrader
 			model.Annotations.Add(arrowAnnotation);
 			return model;
 		}
+		public class TradingButton : Button {
+			private double previousPrice;
+			private string title;
 
-		protected override void OnStart ()
-		{
-			// Handle when your app starts
-		}
-
-		protected override void OnSleep ()
-		{
-			// Handle when your app sleeps
-		}
-
-		protected override void OnResume ()
-		{
-			// Handle when your app resumes
-		}
-	}
-
-	public class TradingButton : Button {
-		private double previousPrice;
-		private string title;
-
-		public TradingButton(string title) {
-			this.title = title;
-			Text = title;
-		}
-
-		public void setPrice(double price) {
-			if (price > previousPrice) {
-				BackgroundColor = Color.FromRgb (38, 127, 0);
-			} else if (price < previousPrice){
-				BackgroundColor = Color.FromHex ("FF6A00");
+			public TradingButton(string title) {
+				this.title = title;
+				Text = title;
 			}
-			Text = title + " [" + price + "]";
-			previousPrice = price;
+
+			public void setPrice(double price) {
+				if (price > previousPrice) {
+					BackgroundColor = Color.FromRgb (38, 127, 0);
+				} else if (price < previousPrice){
+					BackgroundColor = Color.FromHex ("FF6A00");
+				}
+				Text = title + " [" + price + "]";
+				previousPrice = price;
+			}
 		}
 	}
 }

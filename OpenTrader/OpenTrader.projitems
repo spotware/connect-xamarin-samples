@@ -9,16 +9,15 @@
     <Import_RootNamespace>OpenTrader</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)OpenTrader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TradingApiTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Json\AccountsAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Json\AccountsAPIException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Proto\TradingAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\BaseContentPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\LoginPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\ProfilePage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuthSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Json\" />

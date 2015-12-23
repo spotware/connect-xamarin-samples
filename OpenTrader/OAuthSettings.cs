@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OAuthTwoDemo.XForms
+namespace OpenTrader
 {
 	public class OAuthSettings
 	{

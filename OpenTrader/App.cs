@@ -9,7 +9,30 @@ namespace OpenTrader
 {
 	public class App : Application
 	{
-		private const string OAUTH_SERVICE_NAME = "cTrader ID";
+		/* Live Environment
+		public const string OAUTH_SERVICE_NAME = "cTrader ID";
+		public const string OAUTH_HOST_URL = "https://connect.spotware.com";
+		public const string REDIRECT_HOST_URL = "https://connect.spotware.com";
+
+		public const string ACCOUNTS_API_HOST_URL = "https://api.spotware.com";
+		public const string TRADING_API_HOST = "tradeapi.spotware.com";
+		public const int TRADING_API_PORT = 5032;
+
+		public const string CLIENT_ID = "1_6249vt3dcpogwso488wwgsg48co88so84ks4g4o4kwk880g40";
+		public const string CLIENT_SECRET = "26hily0jjm80w40cck8ckgc8skwgg4owog44g0s8cgocoscgc4";
+		*/
+
+		public const string OAUTH_SERVICE_NAME = "cTrader ID";
+		public const string OAUTH_HOST_URL = "https://sandbox-connect.spotware.com";
+		public const string REDIRECT_HOST_URL = "https://sandbox-id.ctrader.com";
+
+		public const string ACCOUNTS_API_HOST_URL = "https://sandbox-api.spotware.com";
+		public const string TRADING_API_HOST = "sandbox-tradeapi.spotware.com";
+		public const int TRADING_API_PORT = 5032;
+
+		public const string CLIENT_ID = "7_5az7pj935owsss8kgokcco84wc8osk0g0gksow0ow4s4ocwwgc";
+		public const string CLIENT_SECRET = "49p1ynqfy7c4sw84gwoogwwsk8cocg8ow8gc8o80c0ws448cs4";
+
 		// just a singleton pattern so I can have the concept of an app instance
 		static volatile App _Instance;
 		static object _SyncRoot = new Object();
@@ -30,11 +53,12 @@ namespace OpenTrader
 							_Instance = new App ();
 							_Instance.OAuthSettings = 
 								new OAuthSettings (
-									clientId: "1_6249vt3dcpogwso488wwgsg48co88so84ks4g4o4kwk880g40",  		// your OAuth2 client id 
+									clientId: CLIENT_ID, // your OAuth2 client id
+									clientSecret: CLIENT_SECRET, // your OAuth2 client secret
 									scope: "trading",  		// The scopes for the particular API you're accessing. The format for this will vary by API.
-									authorizeUrl: "https://connect.spotware.com/oauth/v2/auth",  	// the auth URL for the service
-                                    redirectUrl: "https://id.ctrader.com");   // the redirect URL for the service
-
+									authorizeUrl: OAUTH_HOST_URL + "/oauth/v2/auth",  	// the auth URL for the service
+									redirectUrl: REDIRECT_HOST_URL,   // the redirect URL for the service
+									accessTokenUrl: OAUTH_HOST_URL + "/oauth/v2/token");  	// the access token URL
 							        // If you'd like to know more about how to integrate with an OAuth provider, 
 									// I personally like the Instagram API docs: http://instagram.com/developer/authentication/
 						}

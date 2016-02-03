@@ -15,13 +15,13 @@ namespace OpenTrader.Proto
 	public class TradingAPI
 	{
 		#region Settings...
-		static string clientPublicId = "7_5az7pj935owsss8kgokcco84wc8osk0g0gksow0ow4s4ocwwgc";
-		static string clientSecret = "49p1ynqfy7c4sw84gwoogwwsk8cocg8ow8gc8o80c0ws448cs4";
-		static long testAccountId = 62002;
+		//static long testAccountId = 62002;
 
 		private string host;
 		private int port;
 		private string authToken;
+		private string clientPublicId;
+		private string clientSecret;
 
 		static long testPositionId = -1;
 		//static Dictionary<long, string> testOrdersMap = new Dictionary<long,string>();
@@ -51,11 +51,13 @@ namespace OpenTrader.Proto
 		private OpenApiMessagesFactory outgoingMsgFactory = new OpenApiMessagesFactory ();
 		#endregion Internal fields
 
-		public TradingAPI (string host, int port, string authToken)
+		public TradingAPI (string host, int port, string authToken, string clientPublicId, string clientSecret)
 		{
 			this.host = host;
 			this.port = port;
 			this.authToken = authToken;
+			this.clientPublicId = clientPublicId;
+			this.clientSecret = clientSecret;
 		}
 
 		#region Threads
@@ -226,8 +228,8 @@ namespace OpenTrader.Proto
 			#endregion start timer
 
 			SendAuthorizationRequest ();
-			SendSubscribeForSpotsRequest ();
-			SendSubscribeForTradingEventsRequest ();
+			//SendSubscribeForSpotsRequest ();
+			//SendSubscribeForTradingEventsRequest ();
 		}
 
 		public void Stop() {
@@ -321,12 +323,7 @@ namespace OpenTrader.Proto
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 
-		private void SendSubscribeForTradingEventsRequest ()
-		{
-			SendSubscribeForTradingEventsRequest (testAccountId);
-		}
-
-		private void SendUnsubscribeForTradingEventsRequest ()
+		private void SendUnsubscribeForTradingEventsRequest (long testAccountId)
 		{
 			var _msg = outgoingMsgFactory.CreateUnsubscribeForTradingEventsRequest (testAccountId);
 			if (isDebugIsOn)
@@ -363,7 +360,7 @@ namespace OpenTrader.Proto
 				Console.WriteLine ("SetClientMessageId() New message ID:\"{0}\"", (clientMsgId == null ? "null" : clientMsgId));
 		}
 
-		public void SendMarketOrderRequest (string symbol, ProtoTradeSide tradeSide, long volume)
+		public void SendMarketOrderRequest (long testAccountId, string symbol, ProtoTradeSide tradeSide, long volume)
 		{
 			var _msg = outgoingMsgFactory.CreateMarketOrderRequest (testAccountId, authToken, symbol, tradeSide, volume, clientMsgId);
 			if (isDebugIsOn)
@@ -371,7 +368,7 @@ namespace OpenTrader.Proto
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 
-		private void SendLimitOrderRequest ()
+		private void SendLimitOrderRequest (long testAccountId)
 		{
 			var _msg = outgoingMsgFactory.CreateLimitOrderRequest (testAccountId, authToken, "EURUSD", ProtoTradeSide.BUY, 1000000, 1.8, clientMsgId);
 			if (isDebugIsOn)
@@ -379,7 +376,7 @@ namespace OpenTrader.Proto
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 
-		private void SendStopOrderRequest ()
+		private void SendStopOrderRequest (long testAccountId)
 		{
 			var _msg = outgoingMsgFactory.CreateStopOrderRequest (testAccountId, authToken, "EURUSD", ProtoTradeSide.BUY, 1000000, 0.2, clientMsgId);
 			if (isDebugIsOn)
@@ -387,7 +384,7 @@ namespace OpenTrader.Proto
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 
-		private void SendClosePositionRequest ()
+		private void SendClosePositionRequest (long testAccountId)
 		{
 			var _msg = outgoingMsgFactory.CreateClosePositionRequest (testAccountId, authToken, testPositionId, testVolume, clientMsgId);
 			if (isDebugIsOn)
@@ -395,7 +392,7 @@ namespace OpenTrader.Proto
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 
-		private void SendSubscribeForSpotsRequest ()
+		private void SendSubscribeForSpotsRequest (long testAccountId)
 		{
 			var _msg = outgoingMsgFactory.CreateSubscribeForSpotsRequest (testAccountId, authToken, "EURUSD", clientMsgId);
 			if (isDebugIsOn)

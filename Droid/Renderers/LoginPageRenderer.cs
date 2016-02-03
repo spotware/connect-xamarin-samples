@@ -21,9 +21,11 @@ namespace OpenTrader.Droid
 
 			var auth = new OAuth2Authenticator (
                 clientId: App.Instance.OAuthSettings.ClientId, // your OAuth2 client id
+				clientSecret: App.Instance.OAuthSettings.ClientSecret, // your OAuth2 client secret
                 scope: App.Instance.OAuthSettings.Scope, // The scopes for the particular API you're accessing. The format for this will vary by API.
                 authorizeUrl: new Uri (App.Instance.OAuthSettings.AuthorizeUrl), // the auth URL for the service
-                redirectUrl: new Uri (App.Instance.OAuthSettings.RedirectUrl)); // the redirect URL for the service
+                redirectUrl: new Uri (App.Instance.OAuthSettings.RedirectUrl), // the redirect URL for the service
+				accessTokenUrl: new Uri (App.Instance.OAuthSettings.AccessTokenUrl)); // the access token URL
 
             auth.Completed += (sender, eventArgs) => {
                 if (eventArgs.IsAuthenticated) {
@@ -34,6 +36,11 @@ namespace OpenTrader.Droid
                     // The user cancelled
                 }
             };
+
+			auth.Error += (sender, eventArgs) =>
+			{
+				Console.WriteLine(eventArgs.Message);
+			};
 
             activity.StartActivity (auth.GetUI(activity));
         }

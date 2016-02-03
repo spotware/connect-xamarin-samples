@@ -15,10 +15,6 @@ namespace OpenTrader.Pages
 {
 	public class MainPage : BaseContentPage
 	{
-		private const string ACCOUNTS_API_HOST_URL = "https://api.spotware.com";
-		private const string TRADING_API_HOST = "tradeapi.spotware.com";
-		private const int TRADING_API_PORT = 5032;
-
 		private AccountsAPI accountsAPI;
 		private TradingAPI tradingAPI;
 		private string symbolName = "EURUSD";
@@ -31,6 +27,7 @@ namespace OpenTrader.Pages
 		};
 
 		private TradingAccountJson[] tradingAccounts;
+		private TradingAccountJson currentTradingAccount;
 
 		private PlotView plotView;
 		private TradingButton buyButton;
@@ -56,11 +53,12 @@ namespace OpenTrader.Pages
 			// Once Xamarin.Forms adds more support for view life cycle events, this kind of thing won't be as necessary.
 			// The OnAppearing() and OnDisappearing() overrides just don't quite cut the mustard yet, nor do the Appearing and Disappearing delegates.
 			MessagingCenter.Subscribe<App> (this, "Authenticated", (sender) => {
-				accountsAPI = new AccountsAPI (ACCOUNTS_API_HOST_URL, App.Instance.Token);
-				tradingAPI = new TradingAPI (TRADING_API_HOST, TRADING_API_PORT, App.Instance.Token);
+				accountsAPI = new AccountsAPI (App.ACCOUNTS_API_HOST_URL, App.Instance.Token);
+				tradingAPI = new TradingAPI (App.TRADING_API_HOST, App.TRADING_API_PORT, App.Instance.Token, App.CLIENT_ID, App.CLIENT_SECRET);
 				tradingAccounts = accountsAPI.getTradingAccounts();
+				currentTradingAccount = tradingAccounts[0];
 
-				this.plotView.Model = CandleStickSeries (getMinuteTrendbars (tradingAccounts[0]));
+				this.plotView.Model = CandleStickSeries (getMinuteTrendbars (currentTradingAccount));
 
 				tradingAPI.Start ();
 				tradingAPI.ExecutionEvent += (executionEvent) => {
@@ -133,10 +131,10 @@ namespace OpenTrader.Pages
 			}
 			picker.SelectedIndex = 0;
 			buyButton.HorizontalOptions = LayoutOptions.End;
-			buyButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(symbolName, ProtoTradeSide.BUY, nameToVolume[picker.Items[picker.SelectedIndex]]);
+			buyButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.getAccountId(), symbolName, ProtoTradeSide.BUY, nameToVolume[picker.Items[picker.SelectedIndex]]);
 
 			sellButton.HorizontalOptions = LayoutOptions.End;
-			sellButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(symbolName, ProtoTradeSide.SELL, nameToVolume[picker.Items[picker.SelectedIndex]]);
+			sellButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.getAccountId(), symbolName, ProtoTradeSide.SELL, nameToVolume[picker.Items[picker.SelectedIndex]]);
 
 			StackLayout panel = new StackLayout {
 				Spacing = 5,

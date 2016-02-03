@@ -114,10 +114,10 @@ namespace OpenApiDeveloperLibrary.Json
 		}
 
 		/// <exception cref="com.mycompany.app.AccountsAPIException"/>
-		public virtual TrendbarJson[] getMinuteTredbars(string accountId, string symbolName, DateTime from, DateTime to)
+		public virtual TrendbarJson[] getMinuteTredbars(long accountId, string symbolName, DateTime from, DateTime to)
 		{
 			IDictionary<string, string> pathParams = new Dictionary <string, string>();
-			pathParams["id"] = accountId;
+			pathParams["id"] = accountId.ToString();
 			pathParams["symbolName"] = symbolName;
 			IDictionary<string, string> requestParams = new Dictionary <string, string>();
 			requestParams["from"] = from.ToString("yyyyMMddHHmmss");

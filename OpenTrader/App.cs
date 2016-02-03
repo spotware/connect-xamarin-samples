@@ -60,7 +60,7 @@ namespace OpenTrader
 
 		public string Token {
 			get {
-				if (_Token == null) {
+				/*if (_Token == null) {
 					IEnumerable<Account> accounts = accountStore.FindAccountsForService (OAUTH_SERVICE_NAME);
 					if (accounts.Count() > 0) {
 						Account account = accounts.Last ();
@@ -68,7 +68,7 @@ namespace OpenTrader
 							_Token = account.Properties ["access_token"];
 						}
 					}
-				}
+				}*/
 				return _Token;
 			}
 		}

@@ -15,8 +15,8 @@ namespace OpenTrader.Pages
 {
 	public class MainPage : BaseContentPage
 	{
-		private const string ACCOUNTS_API_HOST_URL = "https://sandbox-api.spotware.com";
-		private const string TRADING_API_HOST = "sandbox-tradeapi.spotware.com";
+		private const string ACCOUNTS_API_HOST_URL = "https://api.spotware.com";
+		private const string TRADING_API_HOST = "tradeapi.spotware.com";
 		private const int TRADING_API_PORT = 5032;
 
 		private AccountsAPI accountsAPI;
@@ -30,59 +30,69 @@ namespace OpenTrader.Pages
 			{ "1 000 000", 100000000 }
 		};
 
-		private TradingButton buyButton = new TradingButton ("Buy");
-		private TradingButton sellButton = new TradingButton("Sell");
+		private TradingAccountJson[] tradingAccounts;
+
+		private PlotView plotView;
+		private TradingButton buyButton;
+		private TradingButton sellButton;
+
 		public MainPage ()
 		{
+			this.plotView = createChartPanel();
+			this.buyButton = new TradingButton ("Buy");
+			this.sellButton = new TradingButton("Sell");
+
+			this.Content = new StackLayout {
+				Orientation = StackOrientation.Vertical,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+				Children = {
+					createTopPanel (),
+					this.plotView,
+					createBottomPanel ()
+				}
+			};
 			// Using messaging center to ensure that content only gets loaded once authentication is successful.
 			// Once Xamarin.Forms adds more support for view life cycle events, this kind of thing won't be as necessary.
 			// The OnAppearing() and OnDisappearing() overrides just don't quite cut the mustard yet, nor do the Appearing and Disappearing delegates.
-			//MessagingCenter.Subscribe<App> (this, "Authenticated", (sender) => {
+			MessagingCenter.Subscribe<App> (this, "Authenticated", (sender) => {
 				accountsAPI = new AccountsAPI (ACCOUNTS_API_HOST_URL, App.Instance.Token);
 				tradingAPI = new TradingAPI (TRADING_API_HOST, TRADING_API_PORT, App.Instance.Token);
+				tradingAccounts = accountsAPI.getTradingAccounts();
 
-				Content = new StackLayout {
-					Orientation = StackOrientation.Vertical,
-					HorizontalOptions = LayoutOptions.FillAndExpand,
-					VerticalOptions = LayoutOptions.FillAndExpand,
-					Children = {
-						createTopPanel (),
-						createChartPanel (getMinuteTrendbars ()),
-						createBottomPanel ()
-					}
-				};
+				this.plotView.Model = CandleStickSeries (getMinuteTrendbars (tradingAccounts[0]));
+
 				tradingAPI.Start ();
 				tradingAPI.ExecutionEvent += (executionEvent) => {
-					Device.BeginInvokeOnMainThread(() => {
+					Device.BeginInvokeOnMainThread (() => {
 						String filledTitle = "Order Filled at {0}";
 						String filledMessage = "Your request to {0} {1} of {2} was filled at VWAP {3}";
 						if (executionEvent.executionType == ProtoOAExecutionType.OA_ORDER_FILLED) {
 							ProtoOAOrder order = executionEvent.order;
-							string title = String.Format(filledTitle, order.executionPrice);
-							string message = String.Format(filledMessage, order.tradeSide, order.requestedVolume/100, order.symbolName, order.executionPrice);
-							DisplayAlert(title, message, "Close");
+							string title = String.Format (filledTitle, order.executionPrice);
+							string message = String.Format (filledMessage, order.tradeSide, order.requestedVolume / 100, order.symbolName, order.executionPrice);
+							DisplayAlert (title, message, "Close");
 						}
 					});
 				};
 				tradingAPI.SpotEvent += (spotEvent) => {
-					Device.BeginInvokeOnMainThread(() => {
+					Device.BeginInvokeOnMainThread (() => {
 						if (spotEvent.askPriceSpecified) {
-							buyButton.setPrice(spotEvent.askPrice);
+							buyButton.setPrice (spotEvent.askPrice);
 						}
 						if (spotEvent.bidPriceSpecified) {
-							sellButton.setPrice(spotEvent.bidPrice);
+							sellButton.setPrice (spotEvent.bidPrice);
 						}
 					});
 				};
-			//});
+			});
 		}
 
-		private TrendbarJson[] getMinuteTrendbars ()
+		private TrendbarJson[] getMinuteTrendbars (TradingAccountJson account)
 		{
-			string accountId = "62002";
 			DateTime to = DateTime.Now;
 			DateTime from = to.AddHours (-3);
-			return accountsAPI.getMinuteTredbars (accountId, symbolName, from, to);
+			return accountsAPI.getMinuteTredbars (account.getAccountId(), symbolName, from, to);
 		}
 
 
@@ -102,10 +112,9 @@ namespace OpenTrader.Pages
 			return panel;
 		}
 
-		private View createChartPanel (TrendbarJson[] data)
+		private PlotView createChartPanel ()
 		{
 			PlotView panel = new PlotView {
-				Model = CandleStickSeries (data),
 				VerticalOptions = LayoutOptions.FillAndExpand,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 			};

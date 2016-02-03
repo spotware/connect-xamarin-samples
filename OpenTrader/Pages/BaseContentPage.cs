@@ -9,7 +9,9 @@ namespace OpenTrader.Pages
 			base.OnAppearing ();
 
 			if (!App.Instance.IsAuthenticated) {
-				Navigation.PushModalAsync(new LoginPage());
+				Navigation.PushModalAsync (new LoginPage ());
+			} else {
+				MessagingCenter.Send<App> (App.Instance, "Authenticated");
 			}
 		}
 	}

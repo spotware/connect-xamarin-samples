@@ -77,14 +77,16 @@ namespace OpenTrader.Pages
 					});
 				};
 				tradingAPI.SpotEvent += (spotEvent) => {
-					Device.BeginInvokeOnMainThread (() => {
-						if (spotEvent.askPriceSpecified) {
-							buyButton.setPrice (spotEvent.askPrice);
-						}
-						if (spotEvent.bidPriceSpecified) {
-							sellButton.setPrice (spotEvent.bidPrice);
-						}
-					});
+					if (spotEvent.symbolName.Equals(currentSymbol.SymbolName)) {
+						Device.BeginInvokeOnMainThread (() => {
+							if (spotEvent.askPriceSpecified) {
+								buyButton.setPrice (spotEvent.askPrice);
+							}
+							if (spotEvent.bidPriceSpecified) {
+								sellButton.setPrice (spotEvent.bidPrice);
+							}
+						});
+					}
 				};
 				tradingAPI.SendSubscribeForTradingEventsRequest (currentTradingAccount.AccountId);
 				tradingAPI.SendSubscribeForSpotsRequest (currentTradingAccount.AccountId, currentSymbol.SymbolName);

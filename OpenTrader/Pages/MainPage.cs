@@ -86,6 +86,8 @@ namespace OpenTrader.Pages
 						}
 					});
 				};
+				tradingAPI.SendSubscribeForTradingEventsRequest (currentTradingAccount.AccountId);
+				tradingAPI.SendSubscribeForSpotsRequest (currentTradingAccount.AccountId, currentSymbol.SymbolName);
 			});
 		}
 
@@ -97,7 +99,6 @@ namespace OpenTrader.Pages
 			}
 			accountPicker.SelectedIndex = 0;
 			currentTradingAccount = tradingAccounts[accountPicker.SelectedIndex];
-			tradingAPI.SendSubscribeForTradingEventsRequest (currentTradingAccount.AccountId);
 		}
 
 		private void fillSymbols ()
@@ -117,7 +118,6 @@ namespace OpenTrader.Pages
 			}
 			symbolPicker.SelectedIndex = selectedIndex;
 			currentSymbol = symbols[symbolPicker.SelectedIndex];
-			tradingAPI.SendSubscribeForSpotsRequest (currentTradingAccount.AccountId, currentSymbol.SymbolName);
 		}
 
 		private void refreshPlotView () {
@@ -142,6 +142,7 @@ namespace OpenTrader.Pages
 					currentTradingAccount = tradingAccounts[accountPicker.SelectedIndex];
 					tradingAPI.SendSubscribeForTradingEventsRequest (currentTradingAccount.AccountId);
 					fillSymbols();
+					tradingAPI.SendSubscribeForSpotsRequest (currentTradingAccount.AccountId, currentSymbol.SymbolName);
 					refreshPlotView();
 				}
 			};

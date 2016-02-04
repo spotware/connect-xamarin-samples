@@ -78,9 +78,15 @@ namespace OpenTrader.Pages
 				};
 				tradingAPI.SpotEvent += (spotEvent) => {
 					if (spotEvent.symbolName.Equals(currentSymbol.SymbolName)) {
+						if (spotEvent.askPriceSpecified) {
+							LineAnnotation annotation = (LineAnnotation)plotView.Model.Annotations[0];
+							annotation.Y = spotEvent.askPrice;
+							annotation.Text = spotEvent.askPrice.ToString();
+						}
 						Device.BeginInvokeOnMainThread (() => {
 							if (spotEvent.askPriceSpecified) {
 								buyButton.setPrice (spotEvent.askPrice);
+								plotView.Model.InvalidatePlot(true);
 							}
 							if (spotEvent.bidPriceSpecified) {
 								sellButton.setPrice (spotEvent.bidPrice);
@@ -123,7 +129,7 @@ namespace OpenTrader.Pages
 		}
 
 		private void refreshPlotView () {
-			this.plotView.Model = CandleStickSeries (getMinuteTrendbars ());
+			this.plotView.Model = LineSeries (getMinuteTrendbars ());
 		}
 
 		private TrendbarJson[] getMinuteTrendbars ()
@@ -164,7 +170,7 @@ namespace OpenTrader.Pages
 		{
 			PlotView panel = new PlotView {
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				HorizontalOptions = LayoutOptions.FillAndExpand,
+				HorizontalOptions = LayoutOptions.FillAndExpand
 			};
 			return panel;
 		}
@@ -212,7 +218,10 @@ namespace OpenTrader.Pages
 
 		public PlotModel CandleStickSeries (TrendbarJson[] data)
 		{
-			var model = new PlotModel { Title = "CandleStickSeries", LegendSymbolLength = 24 };
+			var model = new PlotModel { 
+				Title = "CandleStickSeries",
+				LegendSymbolLength = 24,
+			};
 			var s1 = new OxyPlot.Series.CandleStickSeries {
 				Title = currentSymbol.SymbolName,
 				Color = OxyColors.Black,
@@ -233,6 +242,33 @@ namespace OpenTrader.Pages
 			model.Annotations.Add(arrowAnnotation);
 			return model;
 		}
+
+		public PlotModel LineSeries (TrendbarJson[] data)
+		{
+			var model = new PlotModel { Title = "LineSeries", LegendSymbolLength = 24 };
+			var s1 = new OxyPlot.Series.LineSeries {
+				Title = currentSymbol.SymbolName,
+				Color = OxyColors.Orange,
+			};
+			foreach (TrendbarJson item in data) {
+				s1.Points.Add (new DataPoint (item.Timestamp, item.Close));
+			}
+
+			model.Series.Add (s1);
+			model.Axes.Add (new LinearAxis { Position = AxisPosition.Left, MaximumPadding = 0.3, MinimumPadding = 0.3 });
+			model.Axes.Add (new LinearAxis { Position = AxisPosition.Bottom, MaximumPadding = 0.03, MinimumPadding = 0.03 });
+
+			var arrowAnnotation = new LineAnnotation {
+				Type = LineAnnotationType.Horizontal,
+				Color = OxyColors.Red,
+				Y = data[data.Length - 1].Close,
+				Text = data[data.Length - 1].Close.ToString(),
+				TextColor = OxyColors.White
+			};
+			model.Annotations.Add(arrowAnnotation);
+			return model;
+		}
+
 		public class TradingButton : Button {
 			private double previousPrice;
 			private string title;

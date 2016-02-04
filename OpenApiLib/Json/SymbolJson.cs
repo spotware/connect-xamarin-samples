@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace OpenApiLib.Json
 {
 	public class SymbolJson
@@ -19,7 +21,9 @@ namespace OpenApiLib.Json
 		public double SwapShort{ get; set; }
 		public string ThreeDaysSwaps{ get; set; }
 		public string AssetClass{ get; set; }
+		[JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
 		public double LastAsk{ get; set; }
+		[JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
 		public double LastBid{ get; set; }
 	}
 }

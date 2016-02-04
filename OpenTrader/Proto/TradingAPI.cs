@@ -390,11 +390,19 @@ namespace OpenTrader.Proto
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 
-		public void SendSubscribeForSpotsRequest (long testAccountId)
+		public void SendSubscribeForSpotsRequest (long testAccountId, String symbolName)
 		{
-			var _msg = outgoingMsgFactory.CreateSubscribeForSpotsRequest (testAccountId, authToken, "EURUSD", clientMsgId);
+			var _msg = outgoingMsgFactory.CreateSubscribeForSpotsRequest (testAccountId, authToken, symbolName, clientMsgId);
 			if (isDebugIsOn)
 				Console.WriteLine ("SendSubscribeForSpotsRequest() Message to be send:\n{0}", OpenApiMessagesPresentation.ToString (_msg));
+			writeQueue.Enqueue (Utils.Serialize (_msg));
+		}
+
+		public void SendUnsubscribeFromAllSpots ()
+		{
+			var _msg = outgoingMsgFactory.CreateUnsubscribeFromAllSpotsRequest (clientMsgId);
+			if (isDebugIsOn)
+				Console.WriteLine ("CreateUnsubscribeFromAllSpotsRequest() Message to be send:\n{0}", OpenApiMessagesPresentation.ToString (_msg));
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 

@@ -13,7 +13,7 @@ namespace OpenApiDeveloperLibrary.Json
 	public class AccountsAPI
 	{
 		private const string TRADING_ACCOUNTS_SERVICE = "/connect/tradingaccounts";
-
+		private const string SYMBOLS_SERVICE = "/connect/tradingaccounts/${id}/symbols";
 		private const string MINUTE_TRENDBARS_SERVICE = "/connect/tradingaccounts/${id}/symbols/${symbolName}/trendbars/m1";
 
 		private string root;
@@ -93,7 +93,7 @@ namespace OpenApiDeveloperLibrary.Json
 			return content;
 		}
 
-		public virtual TradingAccountJson[] getTradingAccounts()
+		public TradingAccountJson[] getTradingAccounts()
 		{
 			string service = getServiceURLString(TRADING_ACCOUNTS_SERVICE);
 			try
@@ -112,8 +112,28 @@ namespace OpenApiDeveloperLibrary.Json
 			}
 		}
 
-		/// <exception cref="com.mycompany.app.AccountsAPIException"/>
-		public virtual TrendbarJson[] getMinuteTredbars(long accountId, string symbolName, DateTime from, DateTime to)
+		public SymbolJson[] getSymbols(long accountId)
+		{
+			IDictionary<string, string> pathParams = new Dictionary <string, string>();
+			pathParams["id"] = accountId.ToString();
+			string service = getServiceURLString(SYMBOLS_SERVICE, pathParams);
+			try
+			{
+				MessageJson<SymbolJson[]> messageJson = JsonConvert.DeserializeObject<MessageJson<SymbolJson[]>>(callURL(service));
+				ErrorJson error = messageJson.Error;
+				if (error != null)
+				{
+					throw new AccountsAPIException(error.ErrorCode, error.Description);
+				}
+				return messageJson.Data;
+			}
+			catch (System.Exception e)
+			{
+				throw new AccountsAPIException(e);
+			}
+		}
+
+		public TrendbarJson[] getMinuteTredbars(long accountId, string symbolName, DateTime from, DateTime to)
 		{
 			IDictionary<string, string> pathParams = new Dictionary <string, string>();
 			pathParams["id"] = accountId.ToString();

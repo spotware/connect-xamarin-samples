@@ -17,19 +17,22 @@ namespace OpenTrader.Pages
 	{
 		private AccountsAPI accountsAPI;
 		private TradingAPI tradingAPI;
-		private string symbolName = "EURUSD";
 
 		private Dictionary<string, int> nameToVolume = new Dictionary<string, int> {
-			{ "1000", 100000 },
-			{ "10 000", 1000000 },
-			{ "100 000", 10000000 },
-			{ "1 000 000", 100000000 }
+			{ "1k", 100000 },
+			{ "10k", 1000000 },
+			{ "100k", 10000000 },
+			{ "1M", 100000000 }
 		};
 
 		private TradingAccountJson[] tradingAccounts;
 		private TradingAccountJson currentTradingAccount;
+		private SymbolJson[] symbols;
+		private SymbolJson currentSymbol;
 
+		private Picker accountPicker;
 		private PlotView plotView;
+		private Picker symbolPicker;
 		private TradingButton buyButton;
 		private TradingButton sellButton;
 
@@ -55,10 +58,10 @@ namespace OpenTrader.Pages
 			MessagingCenter.Subscribe<App> (this, "Authenticated", (sender) => {
 				accountsAPI = new AccountsAPI (App.ACCOUNTS_API_HOST_URL, App.Instance.Token);
 				tradingAPI = new TradingAPI (App.TRADING_API_HOST, App.TRADING_API_PORT, App.Instance.Token, App.CLIENT_ID, App.CLIENT_SECRET);
-				tradingAccounts = accountsAPI.getTradingAccounts();
-				currentTradingAccount = tradingAccounts[0];
 
-				this.plotView.Model = CandleStickSeries (getMinuteTrendbars (currentTradingAccount));
+				fillAccounts();
+				fillSymbols();
+				refreshPlotView ();
 
 				tradingAPI.Start ();
 				tradingAPI.ExecutionEvent += (executionEvent) => {
@@ -83,30 +86,72 @@ namespace OpenTrader.Pages
 						}
 					});
 				};
-				tradingAPI.SendSubscribeForSpotsRequest (currentTradingAccount.AccountId);
-				tradingAPI.SendSubscribeForTradingEventsRequest (currentTradingAccount.AccountId);
 			});
 		}
 
-		private TrendbarJson[] getMinuteTrendbars (TradingAccountJson account)
+		private void fillAccounts ()
+		{
+			tradingAccounts = accountsAPI.getTradingAccounts();
+			foreach (TradingAccountJson tradingAccount in tradingAccounts) {
+				accountPicker.Items.Add (tradingAccount.Live ? "Live" : "Demo " + tradingAccount.AccountNumber + " - " + tradingAccount.BrokerTitle);
+			}
+			accountPicker.SelectedIndex = 0;
+			currentTradingAccount = tradingAccounts[accountPicker.SelectedIndex];
+			tradingAPI.SendSubscribeForTradingEventsRequest (currentTradingAccount.AccountId);
+		}
+
+		private void fillSymbols ()
+		{
+			string oldSymbol = null;
+			if (symbolPicker.Items.Count > 0) {
+				oldSymbol = symbolPicker.Items [symbolPicker.SelectedIndex];
+				symbolPicker.Items.Clear ();
+			}
+			symbols = accountsAPI.getSymbols (currentTradingAccount.AccountId);
+			int selectedIndex = 0;
+			foreach (SymbolJson symbol in symbols) {
+				symbolPicker.Items.Add (symbol.SymbolName);
+				if (symbol.SymbolName.Equals(oldSymbol)) {
+					selectedIndex = symbolPicker.Items.Count - 1;
+				}
+			}
+			symbolPicker.SelectedIndex = selectedIndex;
+			currentSymbol = symbols[symbolPicker.SelectedIndex];
+			tradingAPI.SendSubscribeForSpotsRequest (currentTradingAccount.AccountId, currentSymbol.SymbolName);
+		}
+
+		private void refreshPlotView () {
+			this.plotView.Model = CandleStickSeries (getMinuteTrendbars ());
+		}
+
+		private TrendbarJson[] getMinuteTrendbars ()
 		{
 			DateTime to = DateTime.Now;
 			DateTime from = to.AddHours (-3);
-			return accountsAPI.getMinuteTredbars (account.AccountId, symbolName, from, to);
+			return accountsAPI.getMinuteTredbars (currentTradingAccount.AccountId, currentSymbol.SymbolName, from, to);
 		}
-
 
 		private View createTopPanel ()
 		{
+			accountPicker = new Picker {
+				Title = "Account",
+				HorizontalOptions = LayoutOptions.StartAndExpand
+			};
+			accountPicker.SelectedIndexChanged += (object sender, EventArgs e) => {
+				if (accountPicker.SelectedIndex > -1) {
+					currentTradingAccount = tradingAccounts[accountPicker.SelectedIndex];
+					tradingAPI.SendSubscribeForTradingEventsRequest (currentTradingAccount.AccountId);
+					fillSymbols();
+					refreshPlotView();
+				}
+			};
+
 			StackLayout panel = new StackLayout {
 				Spacing = 0,
 				Orientation = StackOrientation.Horizontal,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				Children = {
-					new Label {
-						Text = "Duel EUR/USD",
-						HorizontalOptions = LayoutOptions.Start
-					}
+					accountPicker
 				}
 			};
 			return panel;
@@ -123,27 +168,38 @@ namespace OpenTrader.Pages
 
 		private View createBottomPanel ()
 		{
-			Picker picker = new Picker {
+			symbolPicker = new Picker {
+				Title = "Symbol",
+				HorizontalOptions = LayoutOptions.StartAndExpand
+			};
+			symbolPicker.SelectedIndexChanged += (object sender, EventArgs e) => {
+				if (symbolPicker.SelectedIndex > -1) {
+					currentSymbol = symbols[symbolPicker.SelectedIndex];
+					tradingAPI.SendSubscribeForSpotsRequest (currentTradingAccount.AccountId, currentSymbol.SymbolName);
+					refreshPlotView();
+				}
+			};
+			Picker volumePicker = new Picker {
 				Title = "Volume",
 				HorizontalOptions = LayoutOptions.StartAndExpand
 			};
-
 			foreach (string volumeLabel in nameToVolume.Keys) {
-				picker.Items.Add (volumeLabel);
+				volumePicker.Items.Add (volumeLabel);
 			}
-			picker.SelectedIndex = 0;
+			volumePicker.SelectedIndex = 0;
 			buyButton.HorizontalOptions = LayoutOptions.End;
-			buyButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.AccountId, symbolName, ProtoTradeSide.BUY, nameToVolume[picker.Items[picker.SelectedIndex]]);
+			buyButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.AccountId, currentSymbol.SymbolName, ProtoTradeSide.BUY, nameToVolume[volumePicker.Items[volumePicker.SelectedIndex]]);
 
 			sellButton.HorizontalOptions = LayoutOptions.End;
-			sellButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.AccountId, symbolName, ProtoTradeSide.SELL, nameToVolume[picker.Items[picker.SelectedIndex]]);
+			sellButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.AccountId, currentSymbol.SymbolName, ProtoTradeSide.SELL, nameToVolume[volumePicker.Items[volumePicker.SelectedIndex]]);
 
 			StackLayout panel = new StackLayout {
 				Spacing = 5,
 				Orientation = StackOrientation.Horizontal,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				Children = {
-					picker,
+					this.symbolPicker,
+					volumePicker,
 					buyButton,
 					sellButton,
 				}
@@ -155,7 +211,7 @@ namespace OpenTrader.Pages
 		{
 			var model = new PlotModel { Title = "CandleStickSeries", LegendSymbolLength = 24 };
 			var s1 = new OxyPlot.Series.CandleStickSeries {
-				Title = symbolName,
+				Title = currentSymbol.SymbolName,
 				Color = OxyColors.Black,
 			};
 			foreach (TrendbarJson item in data) {

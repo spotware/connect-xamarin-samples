@@ -102,8 +102,7 @@ namespace OpenApiDeveloperLibrary.Json
 				ErrorJson error = messageJson.Error;
 				if (error != null)
 				{
-					throw new AccountsAPIException(error.getErrorCode(), error.getDescription
-						());
+					throw new AccountsAPIException(error.ErrorCode, error.Description);
 				}
 				return messageJson.Data;
 			}
@@ -129,7 +128,7 @@ namespace OpenApiDeveloperLibrary.Json
 				ErrorJson error = messageJson.Error;
 				if (error != null)
 				{
-					throw new AccountsAPIException(error.getErrorCode(), error.getDescription ());
+					throw new AccountsAPIException(error.ErrorCode, error.Description);
 				}
 				return messageJson.Data;
 			}

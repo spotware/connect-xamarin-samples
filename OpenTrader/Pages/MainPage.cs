@@ -83,6 +83,8 @@ namespace OpenTrader.Pages
 						}
 					});
 				};
+				tradingAPI.SendSubscribeForSpotsRequest (currentTradingAccount.AccountId);
+				tradingAPI.SendSubscribeForTradingEventsRequest (currentTradingAccount.AccountId);
 			});
 		}
 
@@ -90,7 +92,7 @@ namespace OpenTrader.Pages
 		{
 			DateTime to = DateTime.Now;
 			DateTime from = to.AddHours (-3);
-			return accountsAPI.getMinuteTredbars (account.getAccountId(), symbolName, from, to);
+			return accountsAPI.getMinuteTredbars (account.AccountId, symbolName, from, to);
 		}
 
 
@@ -131,10 +133,10 @@ namespace OpenTrader.Pages
 			}
 			picker.SelectedIndex = 0;
 			buyButton.HorizontalOptions = LayoutOptions.End;
-			buyButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.getAccountId(), symbolName, ProtoTradeSide.BUY, nameToVolume[picker.Items[picker.SelectedIndex]]);
+			buyButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.AccountId, symbolName, ProtoTradeSide.BUY, nameToVolume[picker.Items[picker.SelectedIndex]]);
 
 			sellButton.HorizontalOptions = LayoutOptions.End;
-			sellButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.getAccountId(), symbolName, ProtoTradeSide.SELL, nameToVolume[picker.Items[picker.SelectedIndex]]);
+			sellButton.Clicked += (object sender, EventArgs e) => tradingAPI.SendMarketOrderRequest(currentTradingAccount.AccountId, symbolName, ProtoTradeSide.SELL, nameToVolume[picker.Items[picker.SelectedIndex]]);
 
 			StackLayout panel = new StackLayout {
 				Spacing = 5,

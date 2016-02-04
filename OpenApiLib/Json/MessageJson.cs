@@ -18,26 +18,11 @@ namespace OpenApiLib.Json
 
 		public MessageJson(T data)
 		{
-			this.data = data;
+			this.Data = data;
 		}
 
-		public T Data {
-			get {
-				return data;
-			}
-			set {
-				data = value;
-			}
-		}
-
-		public ErrorJson Error {
-			get {
-				return error;
-			}
-			set {
-				error = value;
-			}
-		}
+		public T Data { get; set; }
+		public ErrorJson Error { get; set; }
 
 		public override string ToString()
 		{

@@ -228,8 +228,6 @@ namespace OpenTrader.Proto
 			#endregion start timer
 
 			SendAuthorizationRequest ();
-			//SendSubscribeForSpotsRequest ();
-			//SendSubscribeForTradingEventsRequest ();
 		}
 
 		public void Stop() {
@@ -315,7 +313,7 @@ namespace OpenTrader.Proto
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 
-		private void SendSubscribeForTradingEventsRequest (long accountId)
+		public void SendSubscribeForTradingEventsRequest (long accountId)
 		{
 			var _msg = outgoingMsgFactory.CreateSubscribeForTradingEventsRequest (accountId, authToken);
 			if (isDebugIsOn)
@@ -392,7 +390,7 @@ namespace OpenTrader.Proto
 			writeQueue.Enqueue (Utils.Serialize (_msg));
 		}
 
-		private void SendSubscribeForSpotsRequest (long testAccountId)
+		public void SendSubscribeForSpotsRequest (long testAccountId)
 		{
 			var _msg = outgoingMsgFactory.CreateSubscribeForSpotsRequest (testAccountId, authToken, "EURUSD", clientMsgId);
 			if (isDebugIsOn)

@@ -5,7 +5,6 @@ namespace OpenApiLib.Json
 	public class ErrorJson
 	{
 		private readonly string errorCode;
-
 		private readonly string description;
 
 		public ErrorJson(string type, string message)
@@ -13,15 +12,14 @@ namespace OpenApiLib.Json
 			this.errorCode = type;
 			this.description = message;
 		}
-
-		public virtual string getErrorCode()
+		public string ErrorCode 
 		{
-			return errorCode;
+			get { return this.errorCode;}
 		}
 
-		public virtual string getDescription()
+		public string Description
 		{
-			return description;
+			get { return this.description;}
 		}
 
 		public override string ToString()

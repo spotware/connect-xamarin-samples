@@ -7,8 +7,8 @@ Samples of using [Connect Open API](https://connect.spotware.com/documentation/s
 * Build and run the application on mobile device or emulator
 
 ## Screenshots of the App:
-![Auth page](../spotware.github.io/blob/master/screenshots/Screenshot_2016-02-05-02-30-42.png?raw=true "Auth page")
-![Access rights page](../spotware.github.io/blob/master/screenshots/Screenshot_2016-02-05-02-31-02.png?raw=true "Access rights page")
-![The main page](../spotware.github.io/blob/master/screenshots/Screenshot_2016-02-05-02-29-50.png?raw=true "The main page")
+![Auth page](https://raw.githubusercontent.com/spotware/spotware.github.io/master/screenshots/Screenshot_2016-02-05-02-30-42.png "Auth page")
+![Access rights page](https://raw.githubusercontent.com/spotware/spotware.github.io/master/screenshots/Screenshot_2016-02-05-02-31-02.png "Access rights page")
+![The main page](https://raw.githubusercontent.com/spotware/spotware.github.io/master/screenshots/Screenshot_2016-02-05-02-29-50.png "The main page")
 
 

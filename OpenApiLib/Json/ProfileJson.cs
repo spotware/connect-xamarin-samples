@@ -1,6 +1,6 @@
 namespace OpenApiLib.Json
 {
-	public class ProfileJson
+	public class ProfileJson : AbstractJson
 	{
 		public long UserId { get; set; }
 		public string Nickname { get; set; }

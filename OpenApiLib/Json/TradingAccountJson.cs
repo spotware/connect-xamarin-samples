@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace OpenApiLib.Json
 {
-	public class TradingAccountJson
+	public class TradingAccountJson : AbstractJson
 	{
 		public long AccountId { get; set; }
 		public long AccountNumber{ get; set; }

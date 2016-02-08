@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenApiLib", "OpenApiLib\OpenApiLib.csproj", "{577EE244-7775-49B1-9BC4-8412343FEE01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenApiDeveloperLibrary", "OpenApiDeveloperLibrary\OpenApiDeveloperLibrary.csproj", "{CD44DDA1-49F1-4B2F-945D-CC270DD158C1}"
@@ -69,6 +71,13 @@ Global
 		{CD44DDA1-49F1-4B2F-945D-CC270DD158C1}.Release|Win32.Build.0 = Release|Any CPU
 		{CD44DDA1-49F1-4B2F-945D-CC270DD158C1}.Release|x86.ActiveCfg = Release|Any CPU
 		{CD44DDA1-49F1-4B2F-945D-CC270DD158C1}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		version = 0.2
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		OpenTrader\OpenTrader.projitems*{df212782-a136-48ec-a03c-77854962b925}*SharedItemsImports = 13
+		OpenTrader\OpenTrader.projitems*{21e7b798-ee6a-455a-9ad8-ed8f3c51ba08}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

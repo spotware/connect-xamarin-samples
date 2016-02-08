@@ -1,17 +1,7 @@
 namespace OpenApiLib.Json
 {
-	public class DepositWithdrawResJson
+	public class DepositWithdrawResJson : AbstractJson
 	{
-		private long cashflowId;
-
-		public virtual long getCashflowId()
-		{
-			return cashflowId;
-		}
-
-		public virtual void setCashflowId(long cashflowId)
-		{
-			this.cashflowId = cashflowId;
-		}
+		public long CashflowId { get; set; }
 	}
 }

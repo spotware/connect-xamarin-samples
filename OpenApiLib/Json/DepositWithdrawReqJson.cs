@@ -1,17 +1,7 @@
 namespace OpenApiLib.Json
 {
-	public class DepositWithdrawReqJson
+	public class DepositWithdrawReqJson : AbstractJson
 	{
-		private long amount;
-
-		public virtual long getAmount()
-		{
-			return amount;
-		}
-
-		public virtual void setAmount(long amount)
-		{
-			this.amount = amount;
-		}
+		public long Amount { get; set; }
 	}
 }

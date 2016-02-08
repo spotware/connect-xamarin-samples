@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace OpenApiLib.Json
 {
-	public class SymbolJson
+	public class SymbolJson : AbstractJson
 	{
 		public string SymbolName { get; set; }
 		public int Digits { get; set; }

@@ -21,7 +21,7 @@ namespace OpenTrader
 		public const string CLIENT_ID = "1_6249vt3dcpogwso488wwgsg48co88so84ks4g4o4kwk880g40";
 		public const string CLIENT_SECRET = "26hily0jjm80w40cck8ckgc8skwgg4owog44g0s8cgocoscgc4";
 		*/
-
+		/* Sandbox Environment */
 		public const string OAUTH_SERVICE_NAME = "cTrader ID";
 		public const string OAUTH_HOST_URL = "https://sandbox-connect.spotware.com";
 		public const string REDIRECT_HOST_URL = "https://sandbox-id.ctrader.com";
@@ -32,6 +32,7 @@ namespace OpenTrader
 
 		public const string CLIENT_ID = "7_5az7pj935owsss8kgokcco84wc8osk0g0gksow0ow4s4ocwwgc";
 		public const string CLIENT_SECRET = "49p1ynqfy7c4sw84gwoogwwsk8cocg8ow8gc8o80c0ws448cs4";
+		/**/
 
 		// just a singleton pattern so I can have the concept of an app instance
 		static volatile App _Instance;
@@ -84,7 +85,7 @@ namespace OpenTrader
 
 		public string Token {
 			get {
-				/*if (_Token == null) {
+				if (_Token == null) {
 					IEnumerable<Account> accounts = accountStore.FindAccountsForService (OAUTH_SERVICE_NAME);
 					if (accounts.Count() > 0) {
 						Account account = accounts.Last ();
@@ -92,7 +93,7 @@ namespace OpenTrader
 							_Token = account.Properties ["access_token"];
 						}
 					}
-				}*/
+				}
 				return _Token;
 			}
 		}
